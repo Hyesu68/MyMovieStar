@@ -36,7 +36,8 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val movieId = intent.getIntExtra("id", 0)
-        binding.text.text = movieId.toString()
+        val genre = intent.getStringExtra("genre")
+        binding.genre.text = genre
 
         getMovieDetail(movieId)
         getMyReview(movieId)
@@ -45,6 +46,7 @@ class DetailActivity : AppCompatActivity() {
             val writeReviewFragment = WriteReviewFragment(movieId, title, myReview, isNew)
             writeReviewFragment.show(supportFragmentManager, WriteReviewFragment.TAG)
         }
+        binding.toolBar.setNavigationOnClickListener { finish() }
     }
 
     private fun getMovieDetail(movieId: Int) {
@@ -56,6 +58,9 @@ class DetailActivity : AppCompatActivity() {
                     title = body?.title
                     binding.title.text = body?.title
                     binding.overview.text = body?.overview
+                    binding.releaseDate.text = body?.releaseDate
+                    binding.review.text = body?.voteAverage.toString()
+                    binding.popularity.text = body?.popularity.toString()
 
                     Glide.with(applicationContext)
                         .load("https://image.tmdb.org/t/p/original" + body?.posterPath)
@@ -63,7 +68,8 @@ class DetailActivity : AppCompatActivity() {
 
                     val vote = body?.voteAverage?.div(2)?.toFloat()
                     if (vote != null) {
-                        binding.rating.rating = vote
+//                        binding.rating.rating = vote
+                        binding.star.text = vote.toString()
                     }
                 } else {
 
@@ -139,7 +145,6 @@ class DetailAdapter(val dataSet: MutableList<ReviewData>, val isDetail: Boolean,
     private var movieService: MovieService = RetrofitClient.movieService
     class ViewHolder(val binding: ItemDetailBinding): RecyclerView.ViewHolder(binding.root)
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
@@ -174,6 +179,7 @@ class DetailAdapter(val dataSet: MutableList<ReviewData>, val isDetail: Boolean,
                             val user = documentSnapshot.toObject(UserData::class.java)
                             Glide.with(itemView.context)
                                 .load(user?.profile)
+                                .circleCrop()
                                 .into(binding.profile)
 
                             binding.nickname.text = user?.nickname

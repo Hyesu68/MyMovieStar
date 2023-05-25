@@ -7,7 +7,7 @@ data class LatestData (
     @SerializedName("backdrop_path"         ) var backdropPath        : String?           = null,
     @SerializedName("belongs_to_collection" ) var belongsToCollection : String?           = null,
     @SerializedName("budget"                ) var budget              : Int?              = null,
-    @SerializedName("genres"                ) var genres              : ArrayList<Genre?> = arrayListOf(),
+    @SerializedName("genres"                ) var genres              : ArrayList<Genres?> = arrayListOf(),
     @SerializedName("homepage"              ) var homepage            : String?           = null,
     @SerializedName("id"                    ) var id                  : Int?              = null,
     @SerializedName("imdb_id"               ) var imdbId              : String?           = null,
@@ -29,10 +29,6 @@ data class LatestData (
     @SerializedName("vote_average"          ) var voteAverage         : Int?              = null,
     @SerializedName("vote_count"            ) var voteCount           : Int?              = null
 
-)
-
-data class Genre(
-    @SerializedName("name") val name: String?
 )
 
 data class ProductionCompany(

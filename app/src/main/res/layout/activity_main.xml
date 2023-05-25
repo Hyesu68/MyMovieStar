@@ -10,12 +10,14 @@
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:background="@drawable/main_gradient">
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/app_name"
+            app:titleTextColor="@color/white"
             app:menu="@menu/top_menu"/>
     </com.google.android.material.appbar.AppBarLayout>
 

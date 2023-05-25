@@ -3,6 +3,7 @@ package com.susuryo.mymoviestar.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import com.susuryo.mymoviestar.BuildConfig
 import com.susuryo.mymoviestar.DetailActivity
 import com.susuryo.mymoviestar.MovieService
 import com.susuryo.mymoviestar.RetrofitClient
+import com.susuryo.mymoviestar.data.GenreData
+import com.susuryo.mymoviestar.data.Genres
 import com.susuryo.mymoviestar.data.NowData
 import com.susuryo.mymoviestar.data.Results
 import com.susuryo.mymoviestar.databinding.FragmentHomeBinding
@@ -45,6 +48,7 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
     class ViewHolder(val binding: ItemHomeBinding) : RecyclerView.ViewHolder(binding.root)
     private var movieService: MovieService = RetrofitClient.movieService
     private var dataSet = mutableListOf<Results>()
+    private var genreSet = mutableMapOf<Int, String>()
 
     init {
         val call = movieService.getNowPlaying(BuildConfig.MOVIE_API_KEY)
@@ -55,13 +59,33 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
                     if (body != null) {
                         dataSet = body.results
                     }
-                } else {
+                }
+                getGenre()
+            }
 
+            override fun onFailure(call: Call<NowData>, t: Throwable) {
+
+            }
+        })
+    }
+
+    private fun getGenre() {
+        val call = movieService.getGenres(BuildConfig.MOVIE_API_KEY)
+        call.enqueue(object : Callback<GenreData> {
+            override fun onResponse(call: Call<GenreData>, response: Response<GenreData>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        val genres = body.genres
+                        for (genre in genres) {
+                            genreSet[genre.id!!] = genre.name!!
+                        }
+                    }
                 }
                 notifyDataSetChanged()
             }
 
-            override fun onFailure(call: Call<NowData>, t: Throwable) {
+            override fun onFailure(call: Call<GenreData>, t: Throwable) {
 
             }
         })
@@ -76,19 +100,32 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
         with(viewHolder) {
             with(dataSet[position]) {
                 binding.title.text = this.title
+                binding.review.text = this.voteCount.toString()
+                binding.popularity.text = this.popularity.toString()
+                binding.date.text = this.releaseDate
+
+                val stringBuffer = StringBuffer()
+                for (genre in this.genreIds) {
+                    stringBuffer.append(genreSet[genre])
+                    stringBuffer.append(" ")
+                }
+                binding.genre.text = stringBuffer.toString()
 
                 Glide.with(context)
                     .load("https://image.tmdb.org/t/p/original" + this.posterPath)
+                    .centerCrop()
                     .into(binding.poster)
 
                 val vote = this.voteAverage?.div(2)?.toFloat()
                 if (vote != null) {
-                    binding.rating.rating = vote
+//                    binding.rating.rating = vote
+                    binding.star.text = vote.toString()
                 }
 
                 binding.root.setOnClickListener {
                     val intent = Intent(context, DetailActivity::class.java)
                     intent.putExtra("id", this.id)
+                    intent.putExtra("genre", binding.genre.text.toString())
                     context.startActivity(intent)
                 }
             }

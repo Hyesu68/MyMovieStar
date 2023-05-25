@@ -28,6 +28,7 @@ class SignupActivity : AppCompatActivity() {
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolBar.setNavigationOnClickListener { finish() }
         binding.profileButton.setOnClickListener { selectImage2() }
         binding.button.setOnClickListener { signUp() }
     }
@@ -49,7 +50,9 @@ class SignupActivity : AppCompatActivity() {
                                     Firebase.firestore.collection("users").document(uid)
                                         .set(user)
                                         .addOnCompleteListener {
-                                            startActivity(Intent(this, MainActivity::class.java))
+                                            val intent = Intent(this, MainActivity::class.java)
+                                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                            startActivity(intent)
                                         }
                                 }
                             } else {

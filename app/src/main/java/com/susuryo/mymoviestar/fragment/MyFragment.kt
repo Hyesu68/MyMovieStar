@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.susuryo.mymoviestar.MemberAdapter
+import com.susuryo.mymoviestar.data.ReviewData
 import com.susuryo.mymoviestar.data.UserData
 import com.susuryo.mymoviestar.databinding.FragmentMyBinding
 
@@ -41,15 +42,30 @@ class MyFragment: Fragment() {
                     val user = documentSnapshot.toObject(UserData::class.java)
                     Glide.with(requireContext())
                         .load(user?.profile)
+                        .circleCrop()
                         .into(binding.profile)
                     binding.nickname.text = user?.nickname
+
                     documentSnapshot.reference.collection("reviews").get()
                         .addOnSuccessListener {
                             val size = it.size()
                             binding.review.text = size.toString()
-                        }
-                } else {
 
+                            var rating = 0.0
+                            val documents = it.documents
+                            for (document in documents) {
+                                val fieldMappings = document.data
+                                if (fieldMappings != null) {
+                                    for (fieldMapping in fieldMappings) {
+                                        if (fieldMapping.key.equals("rating")) {
+                                            rating += fieldMapping.value as? Double ?: 0.0
+                                        }
+                                    }
+                                }
+                            }
+
+                            binding.star.text = rating.toString()
+                        }
                 }
             }
             .addOnFailureListener {

@@ -60,7 +60,7 @@ class WriteReviewFragment(val movieId: Int, val title: String?, val myReview: Re
     }
 
     private fun addSuccess(uid: String?) {
-        val id = hashMapOf("reviews" to movieId.toString())
+        val id = hashMapOf("reviews" to movieId.toString(), "rating" to binding.rating.rating)
         Firebase.firestore.collection("users/$uid/reviews").document(movieId.toString()).set(id)
             .addOnSuccessListener {
                 val intent = Intent(requireActivity(), MainActivity::class.java)
