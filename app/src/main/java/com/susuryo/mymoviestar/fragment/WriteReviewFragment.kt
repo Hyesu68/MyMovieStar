@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.susuryo.mymoviestar.DetailActivity
 import com.susuryo.mymoviestar.MainActivity
 import com.susuryo.mymoviestar.data.ReviewData
 import com.susuryo.mymoviestar.databinding.FragmentWriteReviewBinding
@@ -26,23 +28,27 @@ class WriteReviewFragment(val movieId: Int, val title: String?, val myReview: Re
         binding.title.text = title
         binding.editText.requestFocus()
 
-        if (myReview != null) {
-            binding.editText.setText(myReview.review)
-
-            val vote = myReview.rating.toFloat()
-            binding.rating.rating = vote
-        }
+        setMyReview(myReview)
 
         binding.register.setOnClickListener { registerReview() }
 
         return binding.root
     }
 
+    private fun setMyReview(myReview: ReviewData?) {
+        if (myReview != null) {
+            binding.editText.setText(myReview.review)
+
+            val vote = myReview.rating.toFloat()
+            binding.rating.rating = vote
+        }
+    }
+
     private fun registerReview() {
         val uid = Firebase.auth.currentUser?.uid
         val rating = binding.rating.rating.toDouble()
         val review = binding.textInput.editText?.text.toString()
-        val timestamp = FieldValue.serverTimestamp()
+        val timestamp = FieldValue.serverTimestamp() as Timestamp
         val reviewData = ReviewData(movieId, uid!!, rating, review, timestamp)
         val childDocumentData = hashMapOf(
             uid to reviewData,
@@ -63,9 +69,10 @@ class WriteReviewFragment(val movieId: Int, val title: String?, val myReview: Re
         val id = hashMapOf("reviews" to movieId.toString(), "rating" to binding.rating.rating)
         Firebase.firestore.collection("users/$uid/reviews").document(movieId.toString()).set(id)
             .addOnSuccessListener {
-                val intent = Intent(requireActivity(), MainActivity::class.java)
-                intent.putExtra("my", true)
+                val intent = Intent(requireActivity(), DetailActivity::class.java)
+                intent.putExtra("id", movieId)
                 startActivity(intent)
+                requireActivity().finish()
             }
     }
 

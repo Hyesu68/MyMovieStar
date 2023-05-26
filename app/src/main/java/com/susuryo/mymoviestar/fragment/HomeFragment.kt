@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.susuryo.mymoviestar.BuildConfig
 import com.susuryo.mymoviestar.DetailActivity
+import com.susuryo.mymoviestar.GenreSingleton
+import com.susuryo.mymoviestar.MainActivity
 import com.susuryo.mymoviestar.MovieService
 import com.susuryo.mymoviestar.RetrofitClient
 import com.susuryo.mymoviestar.data.GenreData
@@ -48,7 +50,7 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
     class ViewHolder(val binding: ItemHomeBinding) : RecyclerView.ViewHolder(binding.root)
     private var movieService: MovieService = RetrofitClient.movieService
     private var dataSet = mutableListOf<Results>()
-    private var genreSet = mutableMapOf<Int, String>()
+    private val genreSet = GenreSingleton.getDataset()
 
     init {
         val call = movieService.getNowPlaying(BuildConfig.MOVIE_API_KEY)
@@ -60,32 +62,10 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
                         dataSet = body.results
                     }
                 }
-                getGenre()
-            }
-
-            override fun onFailure(call: Call<NowData>, t: Throwable) {
-
-            }
-        })
-    }
-
-    private fun getGenre() {
-        val call = movieService.getGenres(BuildConfig.MOVIE_API_KEY)
-        call.enqueue(object : Callback<GenreData> {
-            override fun onResponse(call: Call<GenreData>, response: Response<GenreData>) {
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body != null) {
-                        val genres = body.genres
-                        for (genre in genres) {
-                            genreSet[genre.id!!] = genre.name!!
-                        }
-                    }
-                }
                 notifyDataSetChanged()
             }
 
-            override fun onFailure(call: Call<GenreData>, t: Throwable) {
+            override fun onFailure(call: Call<NowData>, t: Throwable) {
 
             }
         })
@@ -125,7 +105,6 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
                 binding.root.setOnClickListener {
                     val intent = Intent(context, DetailActivity::class.java)
                     intent.putExtra("id", this.id)
-                    intent.putExtra("genre", binding.genre.text.toString())
                     context.startActivity(intent)
                 }
             }

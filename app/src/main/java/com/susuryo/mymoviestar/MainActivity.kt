@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -19,11 +20,15 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.susuryo.mymoviestar.data.GenreData
 import com.susuryo.mymoviestar.data.UserData
 import com.susuryo.mymoviestar.databinding.ActivityMainBinding
 import com.susuryo.mymoviestar.fragment.HomeFragment
 import com.susuryo.mymoviestar.fragment.MyFragment
 import com.susuryo.mymoviestar.fragment.ReviewFragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -32,44 +37,54 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportFragmentManager.beginTransaction().replace(R.id.layout, HomeFragment()).commit()
-        binding.navigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.item_home -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.layout, HomeFragment()).commit()
-                    true
-                }
-                R.id.item_review -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.layout, ReviewFragment()).commit()
-                    true
-                }
-                R.id.item_my -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.layout, MyFragment()).commit()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        /*binding.toolBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.item_profile -> {
-                    startActivity(Intent(this, SettingActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }*/
-
-        goToMyList()
         setMyProfile()
+        getGenre()
+
+        binding.navigation.setOnItemSelectedListener { item -> setItemSelect(item) }
     }
 
-    private fun goToMyList() {
-        val my = intent.getBooleanExtra("my", false)
-        if (my) {
-            binding.navigation.selectedItemId = R.id.item_my
+    private fun setItemSelect(item: MenuItem) = when (item.itemId) {
+        R.id.item_home -> {
+            supportFragmentManager.beginTransaction().replace(R.id.layout, HomeFragment()).commit()
+            true
         }
+        R.id.item_review -> {
+            supportFragmentManager.beginTransaction().replace(R.id.layout, ReviewFragment())
+                .commit()
+            true
+        }
+        R.id.item_my -> {
+            supportFragmentManager.beginTransaction().replace(R.id.layout, MyFragment()).commit()
+            true
+        }
+        else -> false
+    }
+
+    private var movieService: MovieService = RetrofitClient.movieService
+    var genreSet = mutableMapOf<Int, String>()
+    private fun getGenre() {
+        val call = movieService.getGenres(BuildConfig.MOVIE_API_KEY)
+        call.enqueue(object : Callback<GenreData> {
+            override fun onResponse(call: Call<GenreData>, response: Response<GenreData>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        val genres = body.genres
+                        for (genre in genres) {
+                            genreSet[genre.id!!] = genre.name!!
+                        }
+
+                        val genreSingleton = GenreSingleton
+                        genreSingleton.setDataset(genreSet)
+                    }
+                }
+                supportFragmentManager.beginTransaction().replace(R.id.layout, HomeFragment()).commit()
+            }
+
+            override fun onFailure(call: Call<GenreData>, t: Throwable) {
+                supportFragmentManager.beginTransaction().replace(R.id.layout, HomeFragment()).commit()
+            }
+        })
     }
 
     private fun setMyProfile() {

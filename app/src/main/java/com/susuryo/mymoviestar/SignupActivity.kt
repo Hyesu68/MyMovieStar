@@ -83,6 +83,7 @@ class SignupActivity : AppCompatActivity() {
             // Do work with full size photo saved at fullPhotoUri
             Glide.with(this)
                 .load(profileUri)
+                .circleCrop()
                 .into(binding.profileImage)
 
         } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {

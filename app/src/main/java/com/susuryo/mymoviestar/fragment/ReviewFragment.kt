@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.susuryo.mymoviestar.BuildConfig
@@ -40,6 +41,7 @@ class ReviewFragment: Fragment() {
     private fun getMyReview() {
         Firebase.firestore.collection("reviews").get()
             .addOnSuccessListener { querySnapshot ->
+                val tempList = mutableListOf<ReviewData>()
                 for (document in querySnapshot) {
                     val fieldMappings = document.data
                     if (fieldMappings != null) {
@@ -51,19 +53,20 @@ class ReviewFragment: Fragment() {
                                     userId = fieldMapping["userId"] as? String ?: "",
                                     rating = fieldMapping["rating"] as? Double ?: 0.0,
                                     review = fieldMapping["review"] as? String ?: "",
-                                    timestamp = fieldMapping["timestamp"]
+                                    timestamp = fieldMapping["timestamp"] as? Timestamp
                                 )
 
-                                movieId.add(reviewData.movieId)
-                                reviewList.add(reviewData)
+                                tempList.add(reviewData)
                             }
                         }
                     }
                 }
+                reviewList.addAll(tempList.sortedBy { it.timestamp?.seconds })
+                reviewList.reverse()
 
-                movieId.forEach { movieId ->
-                    getMovieDetail(movieId)
-                }
+                detailAdapter = DetailAdapter(reviewList, false, posterMap)
+                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerView.adapter = detailAdapter
             }
             .addOnFailureListener {
 

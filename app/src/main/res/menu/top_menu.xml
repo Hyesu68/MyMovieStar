@@ -8,6 +8,6 @@
         app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/item_profile"
-        android:title="Profile"
+        android:title=""
         app:showAsAction="ifRoom" />
 </menu>
