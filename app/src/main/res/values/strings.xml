@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Movie Star</string>
+    <string name="name_not_empty">Nickname must not be empty</string>
+    <string name="email_not_empty">Email must not be empty</string>
+    <string name="password_not_empty">Password must not be empty</string>
+    <string name="review_not_empty">Review must not be empty</string>
 </resources>

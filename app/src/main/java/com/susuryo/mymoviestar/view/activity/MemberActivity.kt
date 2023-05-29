@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
@@ -81,6 +82,8 @@ class MemberActivity : AppCompatActivity(), MemberContract.View {
             ))
             binding.follow.setOnClickListener { setFollow(myUid, uid) }
         }
+        binding.follow.isEnabled = true
+        getUserInfo(uid)
     }
 
     private fun checkFollow(myUid: String?, uid: String?) {
@@ -88,12 +91,18 @@ class MemberActivity : AppCompatActivity(), MemberContract.View {
     }
 
     private fun setFollow(myUid: String?, uid: String?) {
+        binding.follow.isEnabled = false
         presenter.setFollow(myUid, uid)
     }
 
     private fun setUnfollow(myUid: String?, uid: String?) {
+        binding.follow.isEnabled = false
         presenter.setUnfollow(myUid, uid)
     }
 
+    override fun onFailure() {
+        binding.follow.isEnabled = true
+        Toast.makeText(applicationContext, "There was an issue encountered", Toast.LENGTH_SHORT).show()
+    }
 }
 

@@ -7,8 +7,10 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.SignupContract
 import com.susuryo.mymoviestar.databinding.ActivitySignupBinding
 import com.susuryo.mymoviestar.presenter.SignupPresenter
@@ -31,7 +33,29 @@ class SignupActivity : AppCompatActivity(), SignupContract.View {
         val email = binding.emailInput.editText?.text.toString()
         val password = binding.passwordInput.editText?.text.toString()
         val nickname = binding.nicknameInput.editText?.text.toString()
-        presenter.doSignUp(email, password, nickname, profileUri)
+
+        if (email.isEmpty()) {
+            binding.emailInput.error = resources.getString(R.string.email_not_empty)
+        }
+        if (nickname.isEmpty()) {
+            binding.nicknameInput.error = resources.getString(R.string.name_not_empty)
+        }
+        if (password.isEmpty()) {
+            binding.passwordInput.error = resources.getString(R.string.password_not_empty)
+        }
+
+        if (email.isNotEmpty() && nickname.isNotEmpty() && password.isNotEmpty() && profileUri != null) {
+            presenter.doSignUp(email, password, nickname, profileUri)
+            binding.progressBar.visibility = View.VISIBLE
+            setEnabled(false)
+        }
+    }
+
+    private fun setEnabled(isEnabled: Boolean) {
+        binding.button.isEnabled = isEnabled
+        binding.emailInput.isEnabled = isEnabled
+        binding.passwordInput.isEnabled = isEnabled
+        binding.nicknameInput.isEnabled = isEnabled
     }
 
     override fun goToMain() {
@@ -41,6 +65,8 @@ class SignupActivity : AppCompatActivity(), SignupContract.View {
     }
 
     override fun showFailure() {
+        binding.progressBar.visibility = View.GONE
+        setEnabled(true)
         Toast.makeText(applicationContext, "There was an issue encountered", Toast.LENGTH_SHORT).show()
     }
 

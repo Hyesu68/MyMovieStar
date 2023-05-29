@@ -3,9 +3,11 @@ package com.susuryo.mymoviestar.view.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.LoginContract
 import com.susuryo.mymoviestar.databinding.ActivityLoginBinding
 import com.susuryo.mymoviestar.presenter.LoginPresenter
@@ -28,7 +30,25 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
     private fun logIn() {
         val email = binding.emailInput.editText?.text.toString()
         val password = binding.passwordInput.editText?.text.toString()
-        presenter.doLogIn(email, password)
+
+        if (email.isEmpty()) {
+            binding.emailInput.error = resources.getString(R.string.email_not_empty)
+        }
+        if (password.isEmpty()) {
+            binding.passwordInput.error = resources.getString(R.string.password_not_empty)
+        }
+
+        if (email.isNotEmpty() && password.isNotEmpty()) {
+            presenter.doLogIn(email, password)
+            binding.progressBar.visibility = View.VISIBLE
+            setEnabled(false)
+        }
+    }
+
+    private fun setEnabled(isEnabled: Boolean) {
+        binding.button.isEnabled = isEnabled
+        binding.emailInput.isEnabled = isEnabled
+        binding.passwordInput.isEnabled = isEnabled
     }
 
     override fun onSuccess() {
@@ -38,6 +58,8 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
     }
 
     override fun onFailure() {
+        binding.progressBar.visibility = View.GONE
+        setEnabled(true)
         Toast.makeText(applicationContext, "There was an issue encountered", Toast.LENGTH_SHORT).show()
     }
 }

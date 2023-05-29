@@ -7,10 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.WriteReviewContract
 import com.susuryo.mymoviestar.view.activity.DetailActivity
 import com.susuryo.mymoviestar.model.ReviewData
@@ -51,11 +48,24 @@ class WriteReviewFragment(private val movieId: Int, val title: String?, private 
         val rating = binding.rating.rating.toDouble()
         val review = binding.textInput.editText?.text.toString()
 
+        if (review.isEmpty()) {
+            binding.textInput.error = resources.getString(R.string.review_not_empty)
+            return
+        }
+
         if (isNew) {
             presenter.setReview(movieId, rating, review)
         } else {
             presenter.updateReview(movieId, rating, review)
         }
+        binding.progressBar.visibility = View.VISIBLE
+        setEnabled(false)
+    }
+
+    private fun setEnabled(isEnabled: Boolean) {
+        binding.rating.isEnabled = isEnabled
+        binding.textInput.isEnabled = isEnabled
+        binding.register.isEnabled = isEnabled
     }
 
     override fun goToDetail() {
@@ -66,6 +76,8 @@ class WriteReviewFragment(private val movieId: Int, val title: String?, private 
     }
 
     override fun showFailure() {
+        binding.progressBar.visibility = View.GONE
+        setEnabled(true)
         Toast.makeText(requireContext(), "There was an issue encountered", Toast.LENGTH_SHORT).show()
     }
 

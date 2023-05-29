@@ -9,6 +9,7 @@ interface MemberContract {
         fun showFollowers(size: Int)
         fun showReviews(size: Int, rating: String)
         fun setButton(isUnfollow: Boolean, myUid: String?, uid: String?)
+        fun onFailure()
     }
 
     interface Presenter {

@@ -19,7 +19,9 @@ class MemberPresenter(val view: MemberContract.View): MemberContract.Presenter {
                     getFollowers(documentSnapshot)
                 }
             }
-            .addOnFailureListener {  }
+            .addOnFailureListener {
+                view.onFailure()
+            }
     }
 
     override fun getFollowers(documentSnapshot: DocumentSnapshot) {
@@ -28,7 +30,9 @@ class MemberPresenter(val view: MemberContract.View): MemberContract.Presenter {
                 val size = it.size()
                 view.showFollowers(size)
             }
-            .addOnFailureListener {  }
+            .addOnFailureListener {
+                view.onFailure()
+            }
     }
 
     override fun getReviews(documentSnapshot: DocumentSnapshot) {
@@ -53,6 +57,9 @@ class MemberPresenter(val view: MemberContract.View): MemberContract.Presenter {
                 val formattedNumber = decimalFormat.format(rating)
                 view.showReviews(size, formattedNumber)
             }
+            .addOnFailureListener {
+                view.onFailure()
+            }
     }
 
     override fun checkFollow(myUid: String?, uid: String?) {
@@ -65,7 +72,9 @@ class MemberPresenter(val view: MemberContract.View): MemberContract.Presenter {
                     }
                 }
             }
-            .addOnFailureListener {  }
+            .addOnFailureListener {
+                view.onFailure()
+            }
     }
 
     override fun setFollow(myUid: String?, uid: String?) {
@@ -77,7 +86,9 @@ class MemberPresenter(val view: MemberContract.View): MemberContract.Presenter {
                 val follower = hashMapOf(myUid to myUid)
                 Firebase.firestore.collection("users/$uid/follower").document(myUid!!).set(follower)
             }
-            .addOnFailureListener {  }
+            .addOnFailureListener {
+                view.onFailure()
+            }
     }
 
     override fun setUnfollow(myUid: String?, uid: String?) {
@@ -87,6 +98,8 @@ class MemberPresenter(val view: MemberContract.View): MemberContract.Presenter {
 
                 Firebase.firestore.collection("users/$uid/follower").document(myUid!!).delete()
             }
-            .addOnFailureListener {  }
+            .addOnFailureListener {
+                view.onFailure()
+            }
     }
 }

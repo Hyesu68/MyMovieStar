@@ -24,13 +24,16 @@
 
     <TextView
         android:id="@+id/nickname"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold"
         android:layout_marginStart="5dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintStart_toEndOf="@+id/profile"
+        app:layout_constraintEnd_toStartOf="@+id/date"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/profile"/>
 
