@@ -2,6 +2,9 @@
 <img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/a50a79c5-33d7-464f-8e0d-e7ef15063730"
 width="650" hspace="10" vspace="10">
 
+# Download Link
+https://play.google.com/store/apps/details?id=com.susuryo.mymoviestar
+
 # Detail
 <img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/8749598f-a834-4486-8fdc-7408262697ad" align="left"
 width="300" hspace="10" vspace="10">
