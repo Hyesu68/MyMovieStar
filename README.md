@@ -1,16 +1,39 @@
 # MyMovieStar
-<img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/a50a79c5-33d7-464f-8e0d-e7ef15063730"
-width="650" hspace="10" vspace="10">
 
-# Download Link
+![Purple App Phone Mockup Sales Marketing Presentation](https://github.com/Hyesu68/MyMovieStar/assets/40760917/75f2cc74-4583-4ead-8948-6158ba68cda1)
+
+My Movie Star is a movie review application that allows users to explore current showing movies, search for movies, and write reviews about them. Users can also follow other users and view their reviews. The app follows the MVP (Model-View-Presenter) pattern and incorporates various libraries and technologies to enhance the user experience.
+
+
+## Download Link
 https://play.google.com/store/apps/details?id=com.susuryo.mymoviestar
 
-# Detail
-<img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/8749598f-a834-4486-8fdc-7408262697ad" align="left"
-width="300" hspace="10" vspace="10">
-<img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/f1f666df-3114-433b-85bf-8f99f3e3a147" align="left"
-width="300" hspace="10" vspace="10">
-<img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/79d67a0b-d235-4fd5-b3aa-e85ab33ec2dd" align="left"
-width="300" hspace="10" vspace="10">
-<img src="https://github.com/Hyesu68/MyMovieStar/assets/40760917/d803dfcb-209b-49a0-ad20-391a60900fa0" align="left"
-width="300" hspace="10" vspace="10">
+
+## Features
+
+- Browse current showing movies: View a list of movies currently in theaters.
+- Movie search: Search for movies by title or keywords.
+- Movie details: View detailed information about a selected movie, including synopsis, release date, and average user ratings.
+- Write reviews: Users can write and post reviews for movies they have watched, along with a star rating.
+- User following: Follow other users and receive updates on their latest reviews.
+- User authentication: Users need to create an account using their email and password to access the app's features.
+- Data storage: Firebase Firestore is used to store user information, movie data, and user reviews.
+- Image loading: Glide library is utilized for efficient loading and caching of movie posters and user profile pictures.
+
+## Technologies and Libraries Used
+
+- Android SDK and AndroidX
+- Material Design 3
+- Retrofit for API communication
+- TMDB Movie API
+- MVP (Model-View-Presenter) architecture pattern
+- Glide for image loading and caching
+- Firebase Firestore for data storage
+- Firebase Authentication for user authentication
+- Firebase Storage for storing images
+
+## Screenshot
+
+![2](https://github.com/Hyesu68/MyMovieStar/assets/40760917/14f724d7-bc10-42d7-b8d2-b5699dad1050)
+![3](https://github.com/Hyesu68/MyMovieStar/assets/40760917/f1d86668-b073-4a3d-b5fb-32ecc526810e)
+
