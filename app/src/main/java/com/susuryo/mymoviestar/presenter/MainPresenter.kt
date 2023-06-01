@@ -1,23 +1,16 @@
 package com.susuryo.mymoviestar.presenter
 
-import android.content.Intent
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.susuryo.mymoviestar.BuildConfig
-import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.MainContract
 import com.susuryo.mymoviestar.model.GenreData
 import com.susuryo.mymoviestar.model.UserData
 import com.susuryo.mymoviestar.network.MovieService
 import com.susuryo.mymoviestar.network.RetrofitClient
 import com.susuryo.mymoviestar.singleton.GenreSingleton
-import com.susuryo.mymoviestar.view.activity.SettingActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,15 +44,15 @@ class MainPresenter(val view: MainContract.View): MainContract.Presenter {
         })
     }
 
-    val uid = Firebase.auth.currentUser?.uid
     override fun getMyProfile() {
+        val uid = Firebase.auth.currentUser?.uid
         Firebase.firestore.collection("users").document(uid!!).get()
             .addOnSuccessListener {
                 val user = it.toObject<UserData>()
                 view.setMyProfile(user)
             }
             .addOnFailureListener {
-
+                view.showFailure()
             }
     }
 }

@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.LoginContract
 import com.susuryo.mymoviestar.databinding.ActivityLoginBinding

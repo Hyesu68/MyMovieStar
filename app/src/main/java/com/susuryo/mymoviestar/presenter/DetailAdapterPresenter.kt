@@ -23,6 +23,8 @@ class DetailAdapterPresenter(val view: DetailAdapterContract.View): DetailAdapte
                 if (response.isSuccessful) {
                     val body = response.body()
                     view.showMovieDetail(body?.posterPath, imageView)
+                } else {
+                    view.showFailure()
                 }
             }
 

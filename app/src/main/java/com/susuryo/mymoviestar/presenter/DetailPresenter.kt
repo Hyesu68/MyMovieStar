@@ -37,11 +37,11 @@ class DetailPresenter(val view: DetailContract.View): DetailContract.Presenter {
         var myReview: ReviewData? = null
         Firebase.firestore.collection("reviews").document(movieId.toString()).get()
             .addOnSuccessListener { documentSnapshot ->
+                val reviewList = mutableListOf<ReviewData>()
                 if (documentSnapshot.exists()) {
                     val fieldMappings = documentSnapshot.data
 
                     if (fieldMappings != null) {
-                        val reviewList = mutableListOf<ReviewData>()
                         for (fieldMapping in fieldMappings.values) {
                             if (fieldMapping is Map<*, *>) {
                                 val reviewData = ReviewData(
@@ -59,10 +59,9 @@ class DetailPresenter(val view: DetailContract.View): DetailContract.Presenter {
                                 }
                             }
                         }
-
-                        view.showMyReview(reviewList, myReview)
                     }
                 }
+                view.showMyReview(reviewList, myReview)
             }
             .addOnFailureListener {
                 view.showFailure()

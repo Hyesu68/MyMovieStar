@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -13,62 +14,47 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.susuryo.mymoviestar.BuildConfig
-import com.susuryo.mymoviestar.network.MovieService
+import com.google.firebase.firestore.QuerySnapshot
+import com.susuryo.mymoviestar.contract.MemberAdapterContract
 import com.susuryo.mymoviestar.view.activity.DetailActivity
 import com.susuryo.mymoviestar.databinding.ItemMemberBinding
-import com.susuryo.mymoviestar.model.DetailData
-import com.susuryo.mymoviestar.network.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.susuryo.mymoviestar.presenter.MemberAdapterPresenter
 
-class MemberAdapter(uid: String?, val context: Context, val view: View): RecyclerView.Adapter<MemberAdapter.ViewHolder>() {
+class MemberAdapter(uid: String?, val context: Context, val view: View): RecyclerView.Adapter<MemberAdapter.ViewHolder>(),
+    MemberAdapterContract.View {
     class ViewHolder(val binding: ItemMemberBinding): RecyclerView.ViewHolder(binding.root)
     private var dataSet = mutableListOf<String>()
+    private val presenter: MemberAdapterContract.Presenter = MemberAdapterPresenter(this)
 
     init {
-        Firebase.firestore.collection("users/$uid/reviews").get()
-            .addOnSuccessListener { documents ->
-                dataSet.clear()
-                for (document in documents) {
-                    dataSet.add(document.id)
-                }
-
-                if (dataSet.size == 0) {
-                    view.visibility = View.GONE
-                }
-                getPosters()
-            }
-            .addOnFailureListener {
-
-            }
+        presenter.getReviews(uid)
     }
 
-    private var movieService: MovieService = RetrofitClient.movieService
-    private var profile = mutableListOf<String?>()
+    override fun showReviews(documents: QuerySnapshot) {
+        dataSet.clear()
+        for (document in documents) {
+            dataSet.add(document.id)
+        }
 
-    private fun getPosters() {
+        if (dataSet.size == 0) {
+            view.visibility = View.GONE
+        }
+
         profile.clear()
         for (i in dataSet) {
-            val call = movieService.getMovieDetails(i.toInt(), BuildConfig.MOVIE_API_KEY)
-            call.enqueue(object : Callback<DetailData> {
-                override fun onResponse(call: Call<DetailData>, response: Response<DetailData>) {
-                    if (response.isSuccessful) {
-                        val body = response.body()
-                        profile.add(body?.posterPath)
-                    }
-
-                    notifyDataSetChanged()
-                }
-
-                override fun onFailure(call: Call<DetailData>, t: Throwable) {
-                    notifyDataSetChanged()
-                }
-            })
+            presenter.getPosters(i)
         }
+    }
+
+    override fun showFailure() {
+        Toast.makeText(context, "There was an issue encountered", Toast.LENGTH_SHORT).show()
+        notifyDataSetChanged()
+    }
+
+    private var profile = mutableListOf<String?>()
+    override fun showPosters(path: String?) {
+        profile.add(path)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

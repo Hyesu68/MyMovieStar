@@ -14,7 +14,7 @@ import com.susuryo.mymoviestar.model.ReviewData
 import com.susuryo.mymoviestar.databinding.FragmentWriteReviewBinding
 import com.susuryo.mymoviestar.presenter.WriteReviewPresenter
 
-class WriteReviewFragment(private val movieId: Int, val title: String?, private val myReview: ReviewData?, val isNew: Boolean): BottomSheetDialogFragment(), WriteReviewContract.View {
+class WriteReviewFragment(private val movieId: Int, val title: String?, private val myReview: ReviewData?, private val isNew: Boolean): BottomSheetDialogFragment(), WriteReviewContract.View {
     private lateinit var binding: FragmentWriteReviewBinding
     private val presenter: WriteReviewContract.Presenter = WriteReviewPresenter(this)
 

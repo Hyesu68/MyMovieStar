@@ -3,45 +3,44 @@ package com.susuryo.mymoviestar.view.adapter
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.susuryo.mymoviestar.BuildConfig
 import com.susuryo.mymoviestar.singleton.GenreSingleton
-import com.susuryo.mymoviestar.network.MovieService
 import com.susuryo.mymoviestar.R
+import com.susuryo.mymoviestar.contract.HomeAdapterContract
 import com.susuryo.mymoviestar.view.activity.DetailActivity
 import com.susuryo.mymoviestar.databinding.ItemHomeBinding
-import com.susuryo.mymoviestar.model.NowData
 import com.susuryo.mymoviestar.model.Results
-import com.susuryo.mymoviestar.network.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.susuryo.mymoviestar.presenter.HomeAdapterPresenter
 
-class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(private val context: Context, private val progressBar: ProgressBar) : RecyclerView.Adapter<HomeAdapter.ViewHolder>(),
+    HomeAdapterContract.View {
     class ViewHolder(val binding: ItemHomeBinding) : RecyclerView.ViewHolder(binding.root)
-    private var movieService: MovieService = RetrofitClient.movieService
     private var dataSet = mutableListOf<Results>()
     private val genreSet = GenreSingleton.getDataset()
+    private val presenter: HomeAdapterContract.Presenter = HomeAdapterPresenter(this)
+
+    override fun showNowPlaying(dataSet: MutableList<Results>) {
+        this.dataSet = dataSet
+        notifyDataSetChanged()
+        progressBar.visibility = View.GONE
+    }
+
+    override fun showFailure() {
+        progressBar.visibility = View.GONE
+        Toast.makeText(context, "There was an issue encountered", Toast.LENGTH_SHORT).show()
+    }
 
     init {
-        val call = movieService.getNowPlaying(BuildConfig.MOVIE_API_KEY)
-        call.enqueue(object : Callback<NowData> {
-            override fun onResponse(call: Call<NowData>, response: Response<NowData>) {
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body != null) {
-                        dataSet = body.results
-                    }
-                }
-                notifyDataSetChanged()
-            }
+        presenter.getNowPlaying()
+    }
 
-            override fun onFailure(call: Call<NowData>, t: Throwable) {
-
-            }
-        })
+    fun getQuery(query: String) {
+        presenter.getQuery(query)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -72,7 +71,6 @@ class HomeAdapter(private val context: Context) : RecyclerView.Adapter<HomeAdapt
 
                 val vote = this.voteAverage?.div(2)?.toFloat()
                 if (vote != null) {
-//                    binding.rating.rating = vote
                     binding.star.text = vote.toString()
                 }
 

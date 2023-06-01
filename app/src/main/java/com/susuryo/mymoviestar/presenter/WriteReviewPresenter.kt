@@ -1,5 +1,6 @@
 package com.susuryo.mymoviestar.presenter
 
+import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -19,7 +20,9 @@ class WriteReviewPresenter(val view: WriteReviewContract.View): WriteReviewContr
 
         Firebase.firestore.collection("reviews").document(movieId.toString()).set(childDocumentData)
             .addOnSuccessListener { setReviewInUser(movieId, rating) }
-            .addOnFailureListener { }
+            .addOnFailureListener { view.showFailure()
+                Log.d("setReview", it.message.toString())
+            }
     }
 
     override fun updateReview(movieId: Int, rating: Double, review: String) {
@@ -31,7 +34,9 @@ class WriteReviewPresenter(val view: WriteReviewContract.View): WriteReviewContr
 
         Firebase.firestore.collection("reviews").document(movieId.toString()).update(childDocumentData.toMap())
             .addOnSuccessListener { setReviewInUser(movieId, rating) }
-            .addOnFailureListener { }
+            .addOnFailureListener { view.showFailure()
+                Log.d("updateReview", it.message.toString())
+            }
     }
 
     override fun setReviewInUser(movieId: Int, rating: Double) {
@@ -39,6 +44,9 @@ class WriteReviewPresenter(val view: WriteReviewContract.View): WriteReviewContr
         Firebase.firestore.collection("users/$uid/reviews").document(movieId.toString()).set(id)
             .addOnSuccessListener {
                 view.goToDetail()
+            }
+            .addOnFailureListener { view.showFailure()
+                Log.d("setReviewInUser", it.message.toString())
             }
     }
 }

@@ -2,7 +2,6 @@ package com.susuryo.mymoviestar.view.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,27 +10,18 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.susuryo.mymoviestar.BuildConfig
-import com.susuryo.mymoviestar.network.MovieService
 import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.DetailAdapterContract
 import com.susuryo.mymoviestar.view.activity.DetailActivity
 import com.susuryo.mymoviestar.view.activity.MemberActivity
 import com.susuryo.mymoviestar.databinding.ItemDetailBinding
-import com.susuryo.mymoviestar.model.DetailData
 import com.susuryo.mymoviestar.model.ReviewData
 import com.susuryo.mymoviestar.model.UserData
-import com.susuryo.mymoviestar.network.RetrofitClient
 import com.susuryo.mymoviestar.presenter.DetailAdapterPresenter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class DetailAdapter(val context: Context, val dataSet: MutableList<ReviewData>, val isDetail: Boolean, val posterMap: MutableMap<Int, String?>?): RecyclerView.Adapter<DetailAdapter.ViewHolder>(),
+class DetailAdapter(val context: Context, private val dataSet: MutableList<ReviewData>, private val isDetail: Boolean): RecyclerView.Adapter<DetailAdapter.ViewHolder>(),
     DetailAdapterContract.View {
     class ViewHolder(val binding: ItemDetailBinding): RecyclerView.ViewHolder(binding.root)
     private val presenter: DetailAdapterContract.Presenter = DetailAdapterPresenter(this)

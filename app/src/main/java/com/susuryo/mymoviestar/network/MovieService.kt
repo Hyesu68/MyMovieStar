@@ -4,6 +4,7 @@ import com.susuryo.mymoviestar.model.DetailData
 import com.susuryo.mymoviestar.model.GenreData
 import com.susuryo.mymoviestar.model.LatestData
 import com.susuryo.mymoviestar.model.NowData
+import com.susuryo.mymoviestar.model.QueryData
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -28,4 +29,9 @@ interface MovieService {
         @Query("language") language: String = "en-US"
     ): Call<GenreData>
 
+    @GET("search/movie")
+    fun getMovieSearch(
+        @Query("query") query: String,
+        @Query("api_key") apiKey: String
+    ): Call<QueryData>
 }

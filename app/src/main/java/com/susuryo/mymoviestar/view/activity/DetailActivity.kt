@@ -7,23 +7,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.susuryo.mymoviestar.BuildConfig
-import com.susuryo.mymoviestar.network.MovieService
 import com.susuryo.mymoviestar.R
 import com.susuryo.mymoviestar.contract.DetailContract
 import com.susuryo.mymoviestar.view.adapter.DetailAdapter
-import com.susuryo.mymoviestar.network.RetrofitClient
 import com.susuryo.mymoviestar.model.DetailData
 import com.susuryo.mymoviestar.model.ReviewData
 import com.susuryo.mymoviestar.databinding.ActivityDetailBinding
 import com.susuryo.mymoviestar.presenter.DetailPresenter
 import com.susuryo.mymoviestar.view.fragment.WriteReviewFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -80,15 +71,14 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
     private var isNew = true
     private var myReview: ReviewData? = null
     override fun showMyReview(reviewList: MutableList<ReviewData>, myReview: ReviewData?) {
-        isNew = false
-
         if (reviewList.isNotEmpty()) {
-            detailAdapter = DetailAdapter(applicationContext, reviewList, true, null)
+            detailAdapter = DetailAdapter(applicationContext, reviewList, true)
             binding.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             binding.recyclerView.adapter = detailAdapter
         }
 
         if (myReview != null) {
+            isNew = false
             this.myReview = myReview
 
             binding.myReview.visibility = View.VISIBLE
@@ -101,6 +91,8 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
             val time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(date)
             binding.date.text = time
         }
+
+        binding.progressBar.visibility = View.GONE
     }
 
     private fun getMovieDetail(movieId: Int) {
@@ -115,4 +107,3 @@ class DetailActivity : AppCompatActivity(), DetailContract.View {
         Toast.makeText(applicationContext, "There was an issue encountered", Toast.LENGTH_SHORT).show()
     }
 }
-

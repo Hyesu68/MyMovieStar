@@ -40,8 +40,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             true
         }
         R.id.item_review -> {
-            supportFragmentManager.beginTransaction().replace(R.id.layout, ReviewFragment())
-                .commit()
+            supportFragmentManager.beginTransaction().replace(R.id.layout, ReviewFragment()).commit()
             true
         }
         R.id.item_my -> {
@@ -67,7 +66,6 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         val menuItemView = menuItem.actionView
         val imageView = menuItemView?.findViewById<ImageView>(R.id.menu_item_image)
 
-        // Update the layout parameters of the ImageView
         val layoutParams = imageView?.layoutParams as? ViewGroup.MarginLayoutParams
         layoutParams?.width = 40.dpToPx()
         layoutParams?.height = 40.dpToPx()
@@ -75,7 +73,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         imageView?.layoutParams = layoutParams
 
         Glide.with(applicationContext)
-            .load(user?.profile) // Load the profile image URL
+            .load(user?.profile)
             .circleCrop()
             .into(imageView!!)
 

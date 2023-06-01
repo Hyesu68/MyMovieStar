@@ -16,7 +16,6 @@ import com.susuryo.mymoviestar.presenter.ReviewPresenter
 class ReviewFragment: Fragment(), ReviewContract.View {
     private lateinit var binding: FragmentReviewBinding
     private lateinit var detailAdapter: DetailAdapter
-    private val posterMap = mutableMapOf<Int, String?>()
     private val presenter: ReviewContract.Presenter = ReviewPresenter(this)
 
     override fun onCreateView(
@@ -34,7 +33,9 @@ class ReviewFragment: Fragment(), ReviewContract.View {
     }
 
     override fun showReviews(reviewList: MutableList<ReviewData>) {
-        detailAdapter = DetailAdapter(requireContext(), reviewList, false, posterMap)
+        binding.progressBar.visibility = View.GONE
+
+        detailAdapter = DetailAdapter(requireContext(), reviewList, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = detailAdapter
     }
