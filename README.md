@@ -13,7 +13,7 @@ https://play.google.com/store/apps/details?id=com.susuryo.mymoviestar
 
 - Browse current showing movies: View a list of movies currently in theaters.
 - Movie search: Search for movies by title or keywords.
-- Movie details: View detailed information about a selected movie, including synopsis, release date, and average user ratings.
+- Movie details: View detailed information about a selected movie, including synopsis, release date, average user ratings, reviews, and popularity.
 - Write reviews: Users can write and post reviews for movies they have watched, along with a star rating.
 - User following: Follow other users and receive updates on their latest reviews.
 - User authentication: Users need to create an account using their email and password to access the app's features.
